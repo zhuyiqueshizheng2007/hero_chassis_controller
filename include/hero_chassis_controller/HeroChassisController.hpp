@@ -1,66 +1,39 @@
 #pragma once
 
-#include "hero_chassis_controller/Algorithm.hpp"
-
-// ROS
+//ROS Control核心头文件
+#include <controller_interface/controller.h>
+#include <hardware_interface/joint_command_interface.h>
+#include <control_toolbox/pid.h>
 #include <ros/ros.h>
-#include <sensor_msgs/Temperature.h>
-#include <std_srvs/Trigger.h>
 
 namespace hero_chassis_controller {
 
-/*!
- * Main class for the node to handle the ROS interfacing.
- */
-class HeroChassisController {
- public:
-  /*!
-   * Constructor.
-   * @param nodeHandle the ROS node handle.
-   */
-  HeroChassisController(ros::NodeHandle &nodeHandle);
+    class HeroChassisController : public controller_interface::Controller<hardware_interface::EffortJointInterface> {
+    public:
+        //四个核心函数
+        bool init(hardware_interface::EffortJointInterface* hw,
+                  ros::NodeHandle& root_nh,
+                  ros::NodeHandle& controller_nh) override;
 
-  /*!
-   * Destructor.
-   */
-  virtual ~HeroChassisController();
+        void update(const ros::Time& time, const ros::Duration& period) override;
+        void starting(const ros::Time& time) override;
+        void stopping(const ros::Time& time) override;
 
- private:
-  /*!
-   * Reads and verifies the ROS parameters.
-   * @return true if successful.
-   */
-  bool readParameters();
+    private:
+        //四个轮子的关节句柄
+        hardware_interface::JointHandle front_left_joint_;
+        hardware_interface::JointHandle front_right_joint_;
+        hardware_interface::JointHandle back_left_joint_;
+        hardware_interface::JointHandle back_right_joint_;
 
-  /*!
-   * ROS topic callback method.
-   * @param message the received message.
-   */
-  void topicCallback(const sensor_msgs::Temperature &message);
+        //四个轮子的 PID 控制器
+        control_toolbox::Pid pid_front_left_;
+        control_toolbox::Pid pid_front_right_;
+        control_toolbox::Pid pid_back_left_;
+        control_toolbox::Pid pid_back_right_;
 
-  /*!
-   * ROS service server callback.
-   * @param request the request of the service.
-   * @param response the provided response.
-   * @return true if successful, false otherwise.
-   */
-  bool serviceCallback(std_srvs::Trigger::Request &request,
-                       std_srvs::Trigger::Response &response);
+        //力矩上限（N·m），从 yaml 的 effort_limit 读
+        double effort_limit_{1.0};
+    };
 
-  //! ROS node handle.
-  ros::NodeHandle &nodeHandle_;
-
-  //! ROS topic subscriber.
-  ros::Subscriber subscriber_;
-
-  //! ROS topic name to subscribe to.
-  std::string subscriberTopic_;
-
-  //! ROS service server.
-  ros::ServiceServer serviceServer_;
-
-  //! Algorithm computation object.
-  Algorithm algorithm_;
-};
-
-} /* namespace */
+} // namespace hero_chassis_controller
