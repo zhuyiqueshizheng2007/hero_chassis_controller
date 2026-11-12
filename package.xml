@@ -18,6 +18,8 @@
   <depend>pluginlib</depend>
   <depend>hardware_interface</depend>
   <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>tf</depend>
   <depend>controller_interface</depend>
   <depend>dynamic_reconfigure</depend>
   <export>

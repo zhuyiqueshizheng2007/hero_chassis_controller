@@ -18,6 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
         hardware_interface
         controller_interface
         geometry_msgs
+        nav_msgs tf
 )
 
 ## Find system libraries
@@ -30,6 +31,7 @@ catkin_package(
         CATKIN_DEPENDS roscpp control_toolbox pluginlib hardware_interface
         controller_interface
         geometry_msgs
+        nav_msgs tf
 )
 
 ###########
