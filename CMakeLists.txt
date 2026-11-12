@@ -17,6 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
         pluginlib
         hardware_interface
         controller_interface
+        geometry_msgs
 )
 
 ## Find system libraries
@@ -28,6 +29,7 @@ catkin_package(
         INCLUDE_DIRS include
         CATKIN_DEPENDS roscpp control_toolbox pluginlib hardware_interface
         controller_interface
+        geometry_msgs
 )
 
 ###########

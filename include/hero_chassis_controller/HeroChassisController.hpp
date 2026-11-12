@@ -1,4 +1,7 @@
-#pragma once
+#ifndef HERO_CHASSIS_CONTROLLER_HPP_
+#define HERO_CHASSIS_CONTROLLER_HPP_
+
+#include<geometry_msgs/Twist.h>
 
 //ROS Control核心头文件
 #include <controller_interface/controller.h>
@@ -34,6 +37,16 @@ namespace hero_chassis_controller {
 
         //力矩上限（N·m），从 yaml 的 effort_limit 读
         double effort_limit_{1.0};
+
+        // /cmd_vel 指令（底盘坐标系），update() 里读取
+        ros::Subscriber cmd_vel_sub_;
+        double cmd_vx_{0.0};
+        double cmd_vy_{0.0};
+        double cmd_wz_{0.0};
+
+        void cmdVelCallback(const geometry_msgs::Twist& msg);
     };
 
 } // namespace hero_chassis_controller
+
+#endif
